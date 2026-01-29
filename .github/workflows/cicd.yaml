@@ -26,7 +26,9 @@ jobs:
       - name: Build and push image
         run: |
           IMAGE=ghcr.io/${{ github.repository }}:latest
-          docker build -t $IMAGE .
+          docker build \
+            --build-arg NEXT_PUBLIC_API_URL="http://${{ secrets.EC2_HOST }}:3001" \
+            -t $IMAGE .
           docker push $IMAGE
 
   deploy:
@@ -49,8 +51,5 @@ jobs:
             docker stop myapp || true
             docker rm myapp || true
             docker pull ghcr.io/${{ github.repository }}:latest
-            docker run -d -p 3000:3000 \
-              -e NEXT_PUBLIC_API_URL="http://${{ secrets.EC2_HOST }}:3001" \
-              --name myapp \
-              ghcr.io/${{ github.repository }}:latest
+            docker run -d -p 3000:3000 --name myapp ghcr.io/${{ github.repository }}:latest
           ENDSSH

@@ -49,5 +49,5 @@ jobs:
             docker stop myapp || true
             docker rm myapp || true
             docker pull ghcr.io/${{ github.repository }}:latest
-            docker run -d -p 3000:3000 --name myapp ghcr.io/${{ github.repository }}:latest
+            docker run -d -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://YOUR_EC2_PUBLIC_IP:3001 --name myapp ghcr.io/${{ github.repository }}:latest
           ENDSSH
